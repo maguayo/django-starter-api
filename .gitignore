@@ -57,3 +57,4 @@ docs/_build/
 .idea/*
 *.DS_store
 *.DS_Store
+db.sqlite3
