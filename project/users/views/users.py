@@ -19,33 +19,22 @@ from project.users.serializers import (
 from project.users.models import User
 
 
-class UserViewSet(
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    viewsets.GenericViewSet,
-):
-    """
-    User view set.
-    Handle sign up, login and account verification.
-    """
+class UserList(APIView):
 
-    queryset = User.objects.filter(is_active=True, is_client=True)
-    serializer_class = UserModelSerializer
-    lookup_field = 'username'
+    def post(self, request, format=None):
+        serializer = UserSignUpSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        data = UserModelSerializer(user).data
+        return Response(data, status=status.HTTP_201_CREATED)
 
-    def get_permissions(self):
-        """Assign permissions based on action."""
-        if self.action in ['signup']:
-            permissions = [AllowAny]
-        elif self.action in ['retrieve', 'update', 'partial_update']:
-            permissions = [IsAuthenticated, IsAccountOwner]
-        else:
-            permissions = [IsAuthenticated]
-        return [p() for p in permissions]
 
-    @action(detail=True, methods=['put', 'patch'])
-    def profile(self, request, *args, **kwargs):
-        """Update profile data."""
+class UserDetail(APIView):
+
+    def patch(self, request, user_id, format=None):
+        """
+        (WIP)
+
         user = self.get_object()
         profile = user.profile
         partial = request.method == 'PATCH'
@@ -58,23 +47,5 @@ class UserViewSet(
         serializer.save()
         data = UserModelSerializer(user).data
         return Response(data)
-
-    def retrieve(self, request, *args, **kwargs):
-        """Add extra data to the response."""
-        response = super(UserViewSet, self).retrieve(request, *args, **kwargs)
-        data = {
-            'user': response.data,
-        }
-        response.data = data
-        return response
-
-
-
-class UserList(APIView):
-
-    def post(self, request, format=None):
-        serializer = UserSignUpSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        data = UserModelSerializer(user).data
-        return Response(data, status=status.HTTP_201_CREATED)
+        """
+        return Response({})
