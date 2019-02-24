@@ -19,6 +19,11 @@ docker-compose ps
 docker-compose down
 ```
 
+## Tests
+```
+docker-compose -f local.yml run tests
+```
+
 ## Create superuser
 
 ```
