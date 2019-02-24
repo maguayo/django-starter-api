@@ -13,6 +13,7 @@ django-environ==0.4.5
 # Django REST Framework
 djangorestframework==3.9.0
 django-filter==2.0.0
+djangorestframework-jwt==1.11.0
 
 # JWT
 pyjwt==1.7.1
@@ -28,3 +29,28 @@ redis>=2.10.6, < 3
 django-redis==4.10.0
 celery==4.2.1
 flower==0.9.2
+
+# Debugging
+ipdb==0.11
+
+# Tools
+django-extensions==2.1.4
+
+# Testing
+mypy==0.650
+pytest==4.0.2
+pytest-sugar==0.9.2
+pytest-django==3.4.4
+factory-boy==2.11.1
+model-mommy==1.6.0
+
+# Code quality
+flake8==3.6.0
+
+gunicorn==19.9.0
+
+# Static files
+django-storages[boto3]==1.7.1
+
+# Email
+django-anymail[mailgun]==5.0

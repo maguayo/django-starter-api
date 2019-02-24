@@ -15,8 +15,7 @@ services:
     volumes:
       - .:/app
     env_file:
-      - ./.envs/.local/.django
-      - ./.envs/.local/.postgres
+      - ./.env
     ports:
       - "8000:8000"
     command: /start
@@ -30,34 +29,11 @@ services:
       - local_postgres_data:/var/lib/postgresql/data
       - local_postgres_data_backups:/backups
     env_file:
-      - ./.envs/.local/.postgres
+      - ./.env
 
   redis:
     image: redis:3.2
 
-  celeryworker:
-    <<: *django
-    image: project_local_celeryworker
-    depends_on:
-      - redis
-      - postgres
-      
-    ports: []
-    command: /start-celeryworker
-
-  celerybeat:
-    <<: *django
-    image: project_local_celerybeat
-    depends_on:
-      - redis
-      - postgres
-      
-    ports: []
-    command: /start-celerybeat
-
-  flower:
-    <<: *django
-    image: project_local_flower
-    ports:
-      - "5555:5555"
-    command: /start-flower
+  tests:
+    image: project_local_pytest
+    command: pytest -v

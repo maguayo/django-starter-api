@@ -1,36 +1,18 @@
-"""Users serializers."""
-
-# Django
 from django.conf import settings
 from django.contrib.auth import password_validation, authenticate
 from django.core.validators import RegexValidator
-
-# Django REST Framework
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueValidator
-
-# Models
 from project.users.models import User, Profile
-
-# Tasks
-from project.taskapp.tasks import send_confirmation_email
-
-# Serializers
 from project.users.serializers.profiles import ProfileModelSerializer
-
-# Utilities
 import jwt
 
 
 class UserModelSerializer(serializers.ModelSerializer):
-    """User model serializer."""
-
     profile = ProfileModelSerializer(read_only=True)
 
     class Meta:
-        """Meta class."""
-
         model = User
         fields = (
             'username',
@@ -86,7 +68,6 @@ class UserSignUpSerializer(serializers.Serializer):
         data.pop('password_confirmation')
         user = User.objects.create_user(**data, is_verified=False, is_client=True)
         Profile.objects.create(user=user)
-        send_confirmation_email.delay(user_pk=user.pk)
         return user
 
 
