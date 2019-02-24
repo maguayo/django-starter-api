@@ -43,15 +43,6 @@ class UserViewSet(
             permissions = [IsAuthenticated]
         return [p() for p in permissions]
 
-    @action(detail=False, methods=['post'])
-    def signup(self, request):
-        """User sign up."""
-        serializer = UserSignUpSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        data = UserModelSerializer(user).data
-        return Response(data, status=status.HTTP_201_CREATED)
-
     @action(detail=True, methods=['put', 'patch'])
     def profile(self, request, *args, **kwargs):
         """Update profile data."""
