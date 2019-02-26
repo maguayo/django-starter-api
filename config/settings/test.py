@@ -8,14 +8,18 @@ from .base import env
 
 # Base
 DEBUG = False
-SECRET_KEY = env("DJANGO_SECRET_KEY", default="7lEaACt4wsCj8JbXYgQLf4BmdG5QbuHTMYUGir2Gc1GHqqb2Pv8w9iXwwlIIviI2")
+SECRET_KEY = env(
+    "DJANGO_SECRET_KEY",
+    default="7lEaACt4wsCj8JbXYgQLf4BmdG5QbuHTMYUGir2Gc1GHqqb2Pv8w9iXwwlIIviI2",
+)
+JWT_AUTH["JWT_SECRET_KEY"] = SECRET_KEY
 TEST_RUNNER = "django.test.runner.DiscoverRunner"
 
 # Cache
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        "LOCATION": ""
+        "LOCATION": "",
     }
 }
 

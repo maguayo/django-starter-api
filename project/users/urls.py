@@ -4,13 +4,18 @@ from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_jwt.views import verify_jwt_token
 from .views import users as user_views
-from project.users.views import UserList
-
+from project.users.views import UserList, UserProfile, UserDetail
 
 
 urlpatterns = [
-    path('login/', view=obtain_jwt_token, name="login"),
-    path('signup/', view=UserList.as_view(), name="signup"),
-    path('token/refresh/', view=refresh_jwt_token, name="token_refresh"),
-    path('token/verify/', view=verify_jwt_token, name="token_refresh"),
+    path("login/", view=obtain_jwt_token, name="login"),
+    path("signup/", view=UserList.as_view(), name="signup"),
+    path("token/refresh/", view=refresh_jwt_token, name="token_refresh"),
+    path("token/verify/", view=verify_jwt_token, name="token_refresh"),
+    path("<int:user_id>/", view=UserDetail.as_view(), name="user-detail"),
+    path(
+        "<int:user_id>/profile/",
+        view=UserProfile.as_view(),
+        name="user-profile-detail",
+    ),
 ]

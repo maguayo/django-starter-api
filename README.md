@@ -21,7 +21,7 @@ docker-compose down
 
 ## Tests
 ```
-docker-compose -f local.yml run tests
+docker-compose -f local.yml run --rm django pytest -v
 ```
 
 ## Create superuser

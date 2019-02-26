@@ -33,7 +33,3 @@ services:
 
   redis:
     image: redis:3.2
-
-  tests:
-    image: project_local_pytest
-    command: pytest -v
