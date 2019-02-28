@@ -20,6 +20,7 @@ def test_user_login(create_user):
     )
 
     assert response.status_code == status.HTTP_200_OK
+    assert "token" in response.json()
 
 
 @pytest.mark.django_db
@@ -31,7 +32,6 @@ def test_user_login__invalid_credentials(create_user):
         content_type="application/json",
         data=json.dumps({"email": EMAIL, "password": "wrongpassword123"}),
     )
-
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
@@ -59,19 +59,31 @@ def test_user_login__check_token(create_user):
 def test_user_update(create_user):
     c = Client()
 
-    response = c.post(
-        reverse("user-detail"),
+    response = c.patch(
+        reverse("user-detail", kwargs={"user_id": create_user["id"]}),
         content_type="application/json",
         data=json.dumps({"email": "new_email@marcosaguayo.com"}),
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.json()["email"] == "new_email@marcosaguayo.com"
+    assert response.json()["success"] == True
+    assert response.json()["data"]["email"] == "new_email@marcosaguayo.com"
 
 
 @pytest.mark.django_db
 def test_profile_user_update(create_user):
-    assert False
+    c = Client()
+    biography = "Hello World!"
+
+    response = c.patch(
+        reverse("user-profile-detail", kwargs={"user_id": create_user["id"]}),
+        content_type="application/json",
+        data=json.dumps({"biography": biography}),
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json()["success"] == True
+    assert response.json()["data"]["profile"]["biography"] == biography
 
 
 @pytest.mark.django_db

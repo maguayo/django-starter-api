@@ -15,6 +15,7 @@ class UserModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
+            "id",
             "username",
             "first_name",
             "last_name",
@@ -29,7 +30,7 @@ class UserSignUpSerializer(serializers.Serializer):
 
     Handle sign up data validation and user/profile creation.
     """
-
+    id = serializers.IntegerField(read_only=True)
     email = serializers.EmailField(
         validators=[UniqueValidator(queryset=User.objects.all())]
     )

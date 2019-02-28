@@ -28,4 +28,4 @@ def create_user():
     )
 
     assert response.status_code == status.HTTP_201_CREATED
-    return response.json()
+    return response.json()["data"]

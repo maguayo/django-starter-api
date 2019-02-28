@@ -4,6 +4,7 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from project.functions import response_wrapper
 from project.users.permissions import IsAccountOwner
 from project.users.serializers.profiles import ProfileModelSerializer
 from project.users.serializers import (
@@ -22,30 +23,29 @@ class UserList(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         data = UserModelSerializer(user).data
-        return Response(data, status=status.HTTP_201_CREATED)
+        return Response(
+            response_wrapper(data=data, success=True),
+            status=status.HTTP_201_CREATED
+        )
 
 
 class UserDetail(APIView):
     def patch(self, request, user_id, format=None):
-        try:
-            user = User.objects.get(id=user_id)
-        except ObjectDoesNotExist:
-            raise NotFound
+        user = User.objects.get(id=user_id)
 
         serializer = UserModelSerializer(user, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
         data = UserModelSerializer(user).data
-        return Response(data)
+        return Response(
+            response_wrapper(data=data, success=True),
+        )
 
 
 class UserProfile(APIView):
     def patch(self, request, user_id, format=None):
-        try:
-            user = User.objects.get(id=user_id)
-        except ObjectDoesNotExist:
-            raise NotFound
+        user = User.objects.get(id=user_id)
 
         profile = user.profile
         serializer = ProfileModelSerializer(
@@ -55,4 +55,6 @@ class UserProfile(APIView):
         serializer.save()
 
         data = UserModelSerializer(user).data
-        return Response(data)
+        return Response(
+            response_wrapper(data=data, success=True),
+        )

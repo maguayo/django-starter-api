@@ -4,7 +4,7 @@
 from django.db import models
 
 # Utilities
-from project.utils.models import BaseModel
+from project.models import BaseModel
 
 
 class Profile(BaseModel):

@@ -1,0 +1,324 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Django Starter API
+
+basePath: /v1
+tags:
+- name: Users
+  description: Authentification and profiles
+
+schemes:
+- http
+
+paths:
+
+  /users/{user_id}/:
+    get:
+      tags:
+      - Users
+      summary: User detail
+      operationId: user_detail
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: "path"
+          name: "user_id"
+          required: true
+          type: "string"
+      responses:
+        201:
+          description: Created
+          schema:
+             $ref: '#/definitions/UserResponse'
+        400:
+          description: Bad request
+        500:
+          description: Internal Server Error
+
+    patch:
+      tags:
+      - Users
+      summary: User detail
+      operationId: user_detail_patch
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: "path"
+          name: "user_id"
+          required: true
+          type: "string"
+        - in: body
+          name: body
+          description: User information
+          required: true
+          schema:
+            properties:
+              username:
+                type: string
+                example: example@email.com
+              email:
+                type: string
+                example: example@email.com
+              first_name:
+                type: string
+                example: John
+              last_name:
+                type: string
+                example: Doe
+              phone_number:
+                type: string
+                example: "+34630245253"
+
+      responses:
+        201:
+          description: Created
+          schema:
+             $ref: '#/definitions/UserResponse'
+        400:
+          description: Bad request
+        500:
+          description: Internal Server Error
+
+
+  /users/{user_id}/profile/:
+    patch:
+      tags:
+      - Users
+      summary: User profile
+      operationId: user_profile_patch
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+        - in: "path"
+          name: "user_id"
+          required: true
+          type: "string"
+        - in: body
+          name: body
+          description: User information
+          required: true
+          schema:
+            $ref: '#/definitions/Profile'
+      responses:
+        201:
+          description: Created
+          schema:
+            $ref: '#/definitions/UserResponse'
+        400:
+          description: Bad request
+        500:
+          description: Internal Server Error
+
+  /users/signup/:
+    post:
+      tags:
+      - Users
+      summary: Signup
+      operationId: signup
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: User information
+        required: true
+        schema:
+          properties:
+            username:
+              type: string
+              example: example@email.com
+            email:
+              type: string
+              example: example@email.com
+            first_name:
+              type: string
+              example: John
+            last_name:
+              type: string
+              example: Doe
+            phone_number:
+              type: string
+              example: "+34630245253"
+            password:
+              type: string
+              example: "MyPassword1-"
+            password_confirmation:
+              type: string
+              example: "MyPassword1-"
+      responses:
+        201:
+          description: Created
+          schema:
+             $ref: '#/definitions/UserResponse'
+        400:
+          description: Bad request
+        500:
+          description: Internal Server Error
+
+  /users/login/:
+    post:
+      tags:
+      - Users
+      summary: Login
+      operationId: login
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: Email and Password
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+              example: example@email.com
+            password:
+              type: string
+              example: "MyPassword1-"
+      responses:
+        200:
+          description: OK
+          schema:
+             $ref: '#/definitions/TokenResponse'
+        400:
+          description: Bad request
+        500:
+          description: Internal Server Error
+
+  /users/token/verify/:
+    post:
+      tags:
+      - Users
+      summary: Verify token
+      operationId: verify
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: Token to verify
+        required: true
+        schema:
+            $ref: '#/definitions/Token'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/TokenResponse'
+        400:
+          description: Bad request
+        500:
+          description: Internal Server Error
+
+  /users/token/refresh/:
+    post:
+      tags:
+      - Users
+      summary: Refresh token
+      operationId: refresh_token
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: Token to refresh
+        required: true
+        schema:
+            $ref: '#/definitions/Token'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/TokenResponse'
+        400:
+          description: Bad request
+        500:
+          description: Internal Server Error
+
+
+definitions:
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+      username:
+        type: string
+        example: example@email.com
+      email:
+        type: string
+        example: example@email.com
+      first_name:
+        type: string
+        example: John
+      last_name:
+        type: string
+        example: Doe
+      verified:
+        type: boolean
+      profile:
+        $ref: '#/definitions/Profile'
+        
+  Profile:
+    type: object
+    properties:
+      level:
+        type: integer
+        example: 3
+      avatar:
+        type: string
+
+  ProfileResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/Profile'
+
+  UserResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/User'
+
+  TokenResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/Token'
+
+  Token:
+    type: object
+    properties:
+      token:
+        type: string
+        example: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6ImhlbGxvMkBkYWtlbi54eXoiLCJleHAiOjE1NTExMjYzODksImVtYWlsIjoiaGVsbG8yQGRha2VuLnh5eiIsIm9yaWdfaWF0IjoxNTUxMDM5OTg5fQ.Yso0bBcv93DFO8ej3pctGvRd5pR4_x7Oc-fIGOoFSGk"
