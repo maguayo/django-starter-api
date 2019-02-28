@@ -34,15 +34,9 @@ docker-compose -f local.yml run --rm django python manage.py createsuperuser
 
 I'll be happily accepting pull requests from anyone.
 
-This that are missing right now:
-
-* [ ] Add tests and coverage implementations
-* [ ] Remove weak Token Authorization system
-
 Suggestions are welcome!
 
 
 ## Contributors
 
-- [Marcos Aguayo](https://github.com/maguayo)
-  | Senior Python Developer | <marcos@aguayo.es>
+- [Marcos Aguayo](https://github.com/maguayo) | <marcos@aguayo.es>
