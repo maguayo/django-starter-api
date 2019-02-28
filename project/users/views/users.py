@@ -25,7 +25,7 @@ class UserList(APIView):
         data = UserModelSerializer(user).data
         return Response(
             response_wrapper(data=data, success=True),
-            status=status.HTTP_201_CREATED
+            status=status.HTTP_201_CREATED,
         )
 
 
@@ -38,9 +38,7 @@ class UserDetail(APIView):
         serializer.save()
 
         data = UserModelSerializer(user).data
-        return Response(
-            response_wrapper(data=data, success=True),
-        )
+        return Response(response_wrapper(data=data, success=True))
 
 
 class UserProfile(APIView):
@@ -55,6 +53,4 @@ class UserProfile(APIView):
         serializer.save()
 
         data = UserModelSerializer(user).data
-        return Response(
-            response_wrapper(data=data, success=True),
-        )
+        return Response(response_wrapper(data=data, success=True))

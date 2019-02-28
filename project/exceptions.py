@@ -6,7 +6,6 @@ from project.functions import response_wrapper
 from rest_framework.exceptions import ValidationError
 
 
-
 def custom_exception_handler(exc, context):  # type: ignore
     """
     Custom exception handler for rest api views
@@ -19,11 +18,9 @@ def custom_exception_handler(exc, context):  # type: ignore
     if isinstance(exc, ValidationError):
         return Response(
             response_wrapper(
-                data=response.data,
-                success=False,
-                code=response.status_code
+                data=response.data, success=False, code=response.status_code
             ),
-            status=response.status_code
+            status=response.status_code,
         )
 
     # if it is handled, just return the response
@@ -33,5 +30,5 @@ def custom_exception_handler(exc, context):  # type: ignore
     if isinstance(exc, ObjectDoesNotExist):
         return Response(
             response_wrapper(data=None, success=False, code=404),
-            status=status.HTTP_404_NOT_FOUND
+            status=status.HTTP_404_NOT_FOUND,
         )
