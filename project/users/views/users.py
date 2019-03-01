@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from project.functions import response_wrapper
 from project.users.permissions import IsAccountOwner
 from project.users.serializers.profiles import ProfileModelSerializer
-from project.users.serializers import (
+from project.users.serializers.users import (
     AccountVerificationSerializer,
     UserLoginSerializer,
     UserModelSerializer,
@@ -15,6 +15,7 @@ from project.users.serializers import (
 )
 from project.users.models import User
 from rest_framework.exceptions import NotFound
+from django.contrib.auth import authenticate
 
 
 class UserList(APIView):
@@ -29,7 +30,20 @@ class UserList(APIView):
         )
 
 
+class UserLogin(APIView):
+    def post(self, request, format=None):
+        tokenLogin = UserLoginSerializer(data=request.data)
+        tokenLogin.is_valid(raise_exception=True)
+        token = tokenLogin.save()
+
+        return Response(
+            response_wrapper(data={'token': token}, success=True)
+        )
+
+
 class UserDetail(APIView):
+    # TODO: Permission check
+
     def patch(self, request, user_id, format=None):
         user = User.objects.get(id=user_id)
 
@@ -40,17 +54,3 @@ class UserDetail(APIView):
         data = UserModelSerializer(user).data
         return Response(response_wrapper(data=data, success=True))
 
-
-class UserProfile(APIView):
-    def patch(self, request, user_id, format=None):
-        user = User.objects.get(id=user_id)
-
-        profile = user.profile
-        serializer = ProfileModelSerializer(
-            profile, data=request.data, partial=True
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        data = UserModelSerializer(user).data
-        return Response(response_wrapper(data=data, success=True))

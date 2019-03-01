@@ -14,11 +14,4 @@ class ProfileModelSerializer(serializers.ModelSerializer):
         """Meta class."""
 
         model = Profile
-        fields = (
-            "picture",
-            "biography",
-            "rides_taken",
-            "rides_offered",
-            "reputation",
-        )
-        read_only_fields = ("rides_taken", "rides_offered", "reputation")
+        fields = ("picture", "biography")

@@ -1,12 +1,13 @@
+import jwt
 from django.conf import settings
 from django.contrib.auth import password_validation, authenticate
 from django.core.validators import RegexValidator
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueValidator
+from rest_framework_jwt.settings import api_settings
 from project.users.models import User, Profile
 from project.users.serializers.profiles import ProfileModelSerializer
-import jwt
 
 
 class UserModelSerializer(serializers.ModelSerializer):
@@ -85,17 +86,25 @@ class UserLoginSerializer(serializers.Serializer):
     def validate(self, data):
         """Check credentials."""
         user = authenticate(username=data["email"], password=data["password"])
+
         if not user:
-            raise serializers.ValidationError("Invalid credentials")
-        if not user.is_verified:
-            raise serializers.ValidationError("Account is not active yet :(")
+            raise serializers.ValidationError(
+                'Unable to log in with provided credentials.'
+            )
+
+        if not user.is_active:
+            raise serializers.ValidationError('User account is disabled.')
+
         self.context["user"] = user
+
         return data
 
     def create(self, data):
-        """Generate or retrieve new token."""
-        token, created = Token.objects.get_or_create(user=self.context["user"])
-        return self.context["user"], token.key
+        """Handle user and profile creation."""
+        user = self.context["user"]
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+        return jwt_encode_handler(jwt_payload_handler(user))
 
 
 class AccountVerificationSerializer(serializers.Serializer):
