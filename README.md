@@ -1,6 +1,5 @@
 # django-starter-api
 ![](https://img.shields.io/badge/code%20style-black-000000.svg)
-![](https://img.shields.io/badge/coverage-93-%238fbf1c.svg)
 
 A boilerplate for creating REST API with Django and Django Rest Framework.
 
