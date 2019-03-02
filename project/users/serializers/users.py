@@ -30,11 +30,6 @@ class UserModelSerializer(serializers.ModelSerializer):
 
 
 class UserSignUpSerializer(serializers.Serializer):
-    """User sign up serializer.
-
-    Handle sign up data validation and user/profile creation.
-    """
-
     id = serializers.IntegerField(read_only=True)
     email = serializers.EmailField(
         validators=[UniqueValidator(queryset=User.objects.all())]
@@ -43,18 +38,13 @@ class UserSignUpSerializer(serializers.Serializer):
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
 
-    # Phone number
     phone_regex = RegexValidator(
         regex=r"\+?1?\d{9,15}$",
         message="Phone number must be entered in the format: +999999999. Up to 15 digits allowed.",
     )
     phone_number = serializers.CharField(validators=[phone_regex])
-
-    # Password
     password = serializers.CharField(min_length=8, max_length=64)
     password_confirmation = serializers.CharField(min_length=8, max_length=64)
-
-    # Name
     first_name = serializers.CharField(min_length=2, max_length=30)
     last_name = serializers.CharField(min_length=2, max_length=30)
 
