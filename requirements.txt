@@ -19,6 +19,7 @@ django-extensions==2.1.4
 mypy==0.650
 pytest==4.0.2
 pytest-django==3.4.4
+pytest-cov==2.6.1
 factory-boy==2.11.1
 model-mommy==1.6.0
 flake8==3.6.0
