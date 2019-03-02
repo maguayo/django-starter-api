@@ -9,7 +9,7 @@ def response_wrapper(success, data, code=None):
 
 def is_valid_token(token):
     try:
-        decoded_token = jwt.decode(
+        jwt.decode(
             token, settings.JWT_AUTH["JWT_SECRET_KEY"], algorithms=["HS256"]
         )
     except InvalidSignatureError:

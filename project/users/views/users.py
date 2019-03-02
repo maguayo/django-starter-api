@@ -1,11 +1,7 @@
-from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.views import APIView
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated
 from project.functions import response_wrapper
-from project.users.permissions import IsAccountOwner
 from project.users.serializers.profiles import ProfileModelSerializer
 from project.users.serializers.users import (
     TokenSerialiser,
@@ -14,10 +10,6 @@ from project.users.serializers.users import (
     UserSignUpSerializer,
 )
 from project.users.models import User
-from rest_framework.exceptions import NotFound
-from django.contrib.auth import authenticate
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-from project.functions import is_valid_token
 
 
 class UserViewSet(
@@ -57,12 +49,10 @@ class UserViewSet(
     def token_verify(self, request):
         token_refresh = TokenSerialiser(data=request.data)
         token_refresh.is_valid(raise_exception=True)
-        
+
         token = token_refresh.data["token"]
 
-        return Response(
-            response_wrapper(data={"token": token}, success=True)
-        )
+        return Response(response_wrapper(data={"token": token}, success=True))
 
     @action(detail=True, methods=["put", "patch"])
     def profile(self, request, *args, **kwargs):
