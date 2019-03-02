@@ -17,6 +17,7 @@ from project.users.models import User
 from rest_framework.exceptions import NotFound
 from django.contrib.auth import authenticate
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from project.functions import is_valid_token
 
 
 class UserViewSet(
@@ -51,6 +52,17 @@ class UserViewSet(
         token_refresh.is_valid(raise_exception=True)
         token = token_refresh.save()
         return Response(response_wrapper(data={"token": token}, success=True))
+
+    @action(detail=False, methods=["post"], url_path="token/verify")
+    def token_verify(self, request):
+        token_refresh = TokenSerialiser(data=request.data)
+        token_refresh.is_valid(raise_exception=True)
+        
+        token = token_refresh.data["token"]
+
+        return Response(
+            response_wrapper(data={"token": token}, success=True)
+        )
 
     @action(detail=True, methods=["put", "patch"])
     def profile(self, request, *args, **kwargs):
