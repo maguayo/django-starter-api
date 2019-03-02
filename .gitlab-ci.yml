@@ -1,0 +1,20 @@
+image: docker:latest
+
+variables:
+  DOCKER_DRIVER: overlay
+
+services:
+- docker:dind
+
+before_script:
+- docker info
+- apk update
+- apk upgrade
+- apk add python python-dev py-pip build-base
+- pip install docker-compose
+
+build:
+  stage: build
+  script:
+  - docker-compose -f local.yml build django
+  - docker-compose -f local.yml run --rm django pytest

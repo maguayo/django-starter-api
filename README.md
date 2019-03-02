@@ -3,6 +3,13 @@
 
 A boilerplate for creating REST API with Django and Django Rest Framework.
 
+- Gitlab CI
+- Docker
+- Python Black
+- Flake8
+- Code coverage over 93%
+
+
 ## Development
 
 ```bash
@@ -37,7 +44,8 @@ docker-compose -f local.yml run --rm django python manage.py createsuperuser
 I'll be happily accepting pull requests from anyone.
 
 TODO:
-- Coverage checks
+- Improve test coverage
+- Add other CI like travis
 
 Suggestions are welcome!
 
