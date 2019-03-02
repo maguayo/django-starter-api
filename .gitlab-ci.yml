@@ -18,3 +18,5 @@ build:
   script:
   - docker-compose -f local.yml build django
   - docker-compose -f local.yml run --rm django pytest
+  - docker-compose -f local.yml run --rm django black .
+  - docker-compose -f local.yml run --rm django flake8 project
