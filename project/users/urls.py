@@ -14,5 +14,4 @@ router.register(r"users", user_views.UserViewSet, basename="users")
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("token/verify/", view=verify_jwt_token, name="token_verify"),
 ]
