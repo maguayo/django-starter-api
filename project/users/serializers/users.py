@@ -9,6 +9,9 @@ from rest_framework_jwt.settings import api_settings
 from project.users.models import User, Profile
 from project.users.serializers.profiles import ProfileModelSerializer
 
+jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
 
 class UserModelSerializer(serializers.ModelSerializer):
     profile = ProfileModelSerializer(read_only=True)
@@ -89,11 +92,11 @@ class UserLoginSerializer(serializers.Serializer):
 
         if not user:
             raise serializers.ValidationError(
-                'Unable to log in with provided credentials.'
+                "Unable to log in with provided credentials."
             )
 
         if not user.is_active:
-            raise serializers.ValidationError('User account is disabled.')
+            raise serializers.ValidationError("User account is disabled.")
 
         self.context["user"] = user
 
@@ -102,18 +105,13 @@ class UserLoginSerializer(serializers.Serializer):
     def create(self, data):
         """Handle user and profile creation."""
         user = self.context["user"]
-        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
         return jwt_encode_handler(jwt_payload_handler(user))
 
 
-class AccountVerificationSerializer(serializers.Serializer):
-    """Account verification serializer."""
-
+class TokenSerialiser(serializers.Serializer):
     token = serializers.CharField()
 
     def validate_token(self, data):
-        """Verify token is valid."""
         try:
             payload = jwt.decode(
                 data, settings.SECRET_KEY, algorithms=["HS256"]
@@ -122,15 +120,11 @@ class AccountVerificationSerializer(serializers.Serializer):
             raise serializers.ValidationError("Verification link has expired.")
         except jwt.PyJWTError:
             raise serializers.ValidationError("Invalid token")
-        if payload["type"] != "email_confirmation":
-            raise serializers.ValidationError("Invalid token")
 
         self.context["payload"] = payload
         return data
 
     def save(self):
-        """Update user's verified status."""
         payload = self.context["payload"]
-        user = User.objects.get(username=payload["user"])
-        user.is_verified = True
-        user.save()
+        user = User.objects.get(email=payload["username"])
+        return jwt_encode_handler(jwt_payload_handler(user))

@@ -14,7 +14,7 @@ def test_user_login(create_user):
     c = Client()
 
     response = c.post(
-        reverse("login"),
+        reverse("users-login"),
         content_type="application/json",
         data=json.dumps({"email": EMAIL, "password": PASSWORD}),
     )
@@ -29,7 +29,7 @@ def test_user_login__invalid_credentials(create_user):
     c = Client()
 
     response = c.post(
-        reverse("login"),
+        reverse("users-login"),
         content_type="application/json",
         data=json.dumps({"email": EMAIL, "password": "wrongpassword123"}),
     )
@@ -42,7 +42,7 @@ def test_user_login__check_token(create_user):
     c = Client()
 
     response = c.post(
-        reverse("login"),
+        reverse("users-login"),
         content_type="application/json",
         data=json.dumps({"email": EMAIL, "password": PASSWORD}),
     )
@@ -62,7 +62,7 @@ def test_user_update(create_user):
     c = Client()
 
     response = c.patch(
-        reverse("user-detail", kwargs={"user_id": create_user["id"]}),
+        reverse("users-detail", kwargs={"pk": create_user["id"]}),
         content_type="application/json",
         data=json.dumps({"email": "new_email@marcosaguayo.com"}),
     )
@@ -78,7 +78,7 @@ def test_profile_user_update(create_user):
     biography = "Hello World!"
 
     response = c.patch(
-        reverse("profile-detail", kwargs={"user_id": create_user["id"]}),
+        reverse("users-profile", kwargs={"pk": create_user["id"]}),
         content_type="application/json",
         data=json.dumps({"biography": biography}),
     )
@@ -88,12 +88,11 @@ def test_profile_user_update(create_user):
     assert response.json()["data"]["profile"]["biography"] == biography
 
 
-
 @pytest.mark.django_db
 def test_user_token__check(create_user):
     c = Client()
     response = c.post(
-        reverse("login"),
+        reverse("users-login"),
         content_type="application/json",
         data=json.dumps({"email": EMAIL, "password": PASSWORD}),
     )
@@ -102,7 +101,7 @@ def test_user_token__check(create_user):
     response = c.post(
         reverse("token_verify"),
         content_type="application/json",
-        data=json.dumps({"token": token})
+        data=json.dumps({"token": token}),
     )
 
     assert response.status_code == status.HTTP_200_OK
@@ -120,7 +119,7 @@ def test_user_token__check__invalid(create_user):
     response = c.post(
         reverse("token_verify"),
         content_type="application/json",
-        data=json.dumps({"token": invalid_token})
+        data=json.dumps({"token": invalid_token}),
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -130,16 +129,16 @@ def test_user_token__check__invalid(create_user):
 def test_user_token__refresh(create_user):
     c = Client()
     response = c.post(
-        reverse("login"),
+        reverse("users-login"),
         content_type="application/json",
         data=json.dumps({"email": EMAIL, "password": PASSWORD}),
     )
     token = response.json()["data"]["token"]
 
     response = c.post(
-        reverse("token_refresh"),
+        reverse("users-token-refresh"),
         content_type="application/json",
-        data=json.dumps({"token": token})
+        data=json.dumps({"token": token}),
     )
 
     assert response.status_code == status.HTTP_200_OK

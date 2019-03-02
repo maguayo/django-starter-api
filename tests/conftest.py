@@ -12,7 +12,7 @@ def create_user():
     c = Client()
 
     response = c.post(
-        reverse("signup"),
+        reverse("users-signup"),
         content_type="application/json",
         data=json.dumps(
             {
