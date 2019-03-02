@@ -99,7 +99,7 @@ def test_user_token__check(create_user):
     token = response.json()["data"]["token"]
 
     response = c.post(
-        reverse("token_verify"),
+        reverse("users-token-verify"),
         content_type="application/json",
         data=json.dumps({"token": token}),
     )
@@ -117,7 +117,7 @@ def test_user_token__check__invalid(create_user):
 
     c = Client()
     response = c.post(
-        reverse("token_verify"),
+        reverse("users-token-verify"),
         content_type="application/json",
         data=json.dumps({"token": invalid_token}),
     )
