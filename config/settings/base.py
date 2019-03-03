@@ -45,6 +45,7 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "django_filters",
+    "corsheaders",
 ]
 LOCAL_APPS = ["project.users.apps.UsersAppConfig"]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -72,6 +73,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Middlewares
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -168,3 +170,5 @@ JWT_AUTH = {
     "JWT_AUTH_HEADER_PREFIX": "JWT",
     "JWT_AUTH_COOKIE": None,
 }
+
+CORS_ORIGIN_WHITELIST = ("localhost:3000", "127.0.0.1:8000")
