@@ -29,5 +29,32 @@ services:
     env_file:
       - ./.env
 
+  caddy:
+    build:
+      context: .
+      dockerfile: ./compose/production/caddy/Dockerfile
+    image: project_production_caddy
+    depends_on:
+      - django
+    volumes:
+      - production_caddy:/root/.caddy
+    env_file:
+      - ./.env
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    ports:
+      - 5080:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@localhost.com
+      - PGADMIN_DEFAULT_PASSWORD=Passw0rd!
+
   redis:
     image: redis:3.2

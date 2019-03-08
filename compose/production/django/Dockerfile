@@ -37,4 +37,6 @@ USER django
 
 WORKDIR /app
 
+RUN mkdir /app/project/static
+
 ENTRYPOINT ["/entrypoint"]
