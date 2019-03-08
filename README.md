@@ -40,6 +40,41 @@ docker-compose -f local.yml run --rm django pytest --cov=project tests/
 docker-compose -f local.yml run --rm django python manage.py createsuperuser
 ```
 
+## Deploy
+Install docker and docker-compose.
+
+Build docker:
+```
+sudo docker-compose -f production.yml build
+```
+
+Now install Supervisor
+```
+sudo apt-get install supervisor
+sudo service supervisor restart
+```
+
+Now you need to create a new supervisor service, to do that go to `/etc/supervisor/conf.d`, and create the file `fload.conf`. And paste this inside:
+```
+[program:fload]
+command=docker-compose -f production.yml up
+directory=/home/ubuntu/api-base
+redirect_stderr=true
+autostart=true
+autorestart=true
+priority=10
+```
+
+Once saved run
+```
+sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl start fload
+sudo supervisorctl status fload
+```
+
+
+
 ## Contributing
 
 I'll be happily accepting pull requests from anyone.
