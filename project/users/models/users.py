@@ -26,7 +26,7 @@ class User(BaseModel, AbstractUser):
     )
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username", "first_name", "last_name"]
+    REQUIRED_FIELDS = []
 
     is_client = models.BooleanField(
         "client",

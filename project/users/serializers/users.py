@@ -41,11 +41,17 @@ class UserSignUpSerializer(serializers.Serializer):
         regex=r"\+?1?\d{9,15}$",
         message="Phone number must be entered in the format: +999999999. Up to 15 digits allowed.",
     )
-    phone_number = serializers.CharField(validators=[phone_regex])
+    phone_number = serializers.CharField(
+        validators=[phone_regex], required=False
+    )
     password = serializers.CharField(min_length=8, max_length=64)
     password_confirmation = serializers.CharField(min_length=8, max_length=64)
-    first_name = serializers.CharField(min_length=2, max_length=30)
-    last_name = serializers.CharField(min_length=2, max_length=30)
+    first_name = serializers.CharField(
+        min_length=2, max_length=30, required=False
+    )
+    last_name = serializers.CharField(
+        min_length=2, max_length=30, required=False
+    )
 
     def validate(self, data):
         """Verify passwords match."""
@@ -77,7 +83,7 @@ class UserLoginSerializer(serializers.Serializer):
 
     def validate(self, data):
         """Check credentials."""
-        user = authenticate(username=data["email"], password=data["password"])
+        user = authenticate(email=data["email"], password=data["password"])
 
         if not user:
             raise serializers.ValidationError(
@@ -94,7 +100,8 @@ class UserLoginSerializer(serializers.Serializer):
     def create(self, data):
         """Handle user and profile creation."""
         user = self.context["user"]
-        return jwt_encode_handler(jwt_payload_handler(user))
+        payload = jwt_payload_handler(user)
+        return jwt_encode_handler(payload)
 
 
 class TokenSerialiser(serializers.Serializer):
@@ -115,5 +122,5 @@ class TokenSerialiser(serializers.Serializer):
 
     def save(self):
         payload = self.context["payload"]
-        user = User.objects.get(email=payload["username"])
+        user = User.objects.get(email=payload["email"])
         return jwt_encode_handler(jwt_payload_handler(user))

@@ -1,4 +1,4 @@
-from rest_framework import mixins, status, viewsets
+from rest_framework import mixins, status, viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from project.functions import response_wrapper
@@ -10,6 +10,8 @@ from project.users.serializers.users import (
     UserSignUpSerializer,
 )
 from project.users.models import User
+from project.users.permissions import ActionBasedPermission
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 
 class UserViewSet(
@@ -18,6 +20,24 @@ class UserViewSet(
 
     queryset = User.objects.filter(is_active=True, is_client=True)
     serializer_class = UserModelSerializer
+    authentication_classes = (JSONWebTokenAuthentication,)
+    permission_classes = (ActionBasedPermission,)
+    action_permissions = {
+        permissions.IsAuthenticated: [
+            "update",
+            "partial_update",
+            "destroy",
+            "list",
+            "retrieve",
+            "profile",
+        ],
+        permissions.AllowAny: [
+            "login",
+            "signup",
+            "token_verify",
+            "token_refresh",
+        ],
+    }
 
     @action(detail=False, methods=["post"])
     def login(self, request):
@@ -72,3 +92,8 @@ class UserViewSet(
         response = super(UserViewSet, self).update(request, *args, **kwargs)
         data = UserModelSerializer(response.data).data
         return Response(response_wrapper(data=data, success=True))
+
+    def retrieve(self, request, pk) -> Response:
+        user = self.get_object()
+        serialiser = UserModelSerializer(user)
+        return Response(response_wrapper(data=serialiser.data, success=True))
