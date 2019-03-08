@@ -141,6 +141,7 @@ MANAGERS = ADMINS
 # Django REST Framework
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
+    "JSON_UNDERSCOREIZE": {"no_underscore_before_number": True},
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_jwt.authentication.JSONWebTokenAuthentication",
     ),
@@ -149,12 +150,13 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "project.exceptions.custom_exception_handler",
 }
 
+
 JWT_AUTH = {
-    "JWT_ENCODE_HANDLER": "rest_framework_jwt.utils.jwt_encode_handler",
-    "JWT_DECODE_HANDLER": "rest_framework_jwt.utils.jwt_decode_handler",
-    "JWT_PAYLOAD_HANDLER": "rest_framework_jwt.utils.jwt_payload_handler",
-    "JWT_PAYLOAD_GET_USER_ID_HANDLER": "rest_framework_jwt.utils.jwt_get_user_id_from_payload_handler",
-    "JWT_RESPONSE_PAYLOAD_HANDLER": "rest_framework_jwt.utils.jwt_response_payload_handler",
+    "JWT_ENCODE_HANDLER": "project.users.auth.jwt_encode_handler",
+    "JWT_DECODE_HANDLER": "project.users.auth.jwt_decode_handler",
+    "JWT_PAYLOAD_HANDLER": "project.users.auth.jwt_payload_handler",
+    "JWT_PAYLOAD_GET_USER_ID_HANDLER": "project.users.auth.jwt_get_user_id_from_payload_handler",
+    "JWT_RESPONSE_PAYLOAD_HANDLER": "project.users.auth.jwt_response_payload_handler",
     "JWT_GET_USER_SECRET_KEY": None,
     "JWT_PUBLIC_KEY": None,
     "JWT_PRIVATE_KEY": None,
