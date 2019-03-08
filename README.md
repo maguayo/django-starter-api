@@ -54,11 +54,11 @@ sudo apt-get install supervisor
 sudo service supervisor restart
 ```
 
-Now you need to create a new supervisor service, to do that go to `/etc/supervisor/conf.d`, and create the file `fload.conf`. And paste this inside:
+Now you need to create a new supervisor service, to do that go to `/etc/supervisor/conf.d`, and create the file `project.conf`. And paste this inside:
 ```
-[program:fload]
+[program:project]
 command=docker-compose -f production.yml up
-directory=/home/ubuntu/api-base
+directory=/home/ubuntu/project
 redirect_stderr=true
 autostart=true
 autorestart=true
@@ -69,8 +69,8 @@ Once saved run
 ```
 sudo supervisorctl reread
 sudo supervisorctl update
-sudo supervisorctl start fload
-sudo supervisorctl status fload
+sudo supervisorctl start project
+sudo supervisorctl status project
 ```
 
 
