@@ -88,4 +88,4 @@ Suggestions are welcome!
 
 ## Contributors
 
-- [Marcos Aguayo](https://github.com/maguayo) | <marcos@aguayo.es>
+- [Marcos Aguayo](http://marcosaguayo.com) | <marcos@aguayo.es>
