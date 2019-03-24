@@ -55,6 +55,7 @@ def test_user_login__check_token(create_user):
     assert decoded_token["username"] == EMAIL
     assert decoded_token["email"] == EMAIL
     assert decoded_token["user_id"] == User.objects.get(email=EMAIL).id
+    assert decoded_token["id"] == str(User.objects.get(email=EMAIL).id)
 
 
 @pytest.mark.django_db

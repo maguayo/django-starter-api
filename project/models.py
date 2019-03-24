@@ -3,7 +3,7 @@ from django.db import models
 
 
 class BaseModel(models.Model):
-    """Base model
+    """Base model Date
 
     BaseModel acts as an abstract base class from which every
     other model in the project will inherit. This class provides
@@ -12,6 +12,7 @@ class BaseModel(models.Model):
         + modified (DateTime): Store the last datetime the object was modified.
     """
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     created = models.DateTimeField(
         "created at",
         auto_now_add=True,
