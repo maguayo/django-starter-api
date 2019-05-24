@@ -20,8 +20,7 @@ def test_user_login(create_user):
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.json()["success"] is True
-    assert "token" in response.json()["data"]
+    assert "token" in response.json()
 
 
 @pytest.mark.django_db
@@ -34,7 +33,6 @@ def test_user_login__invalid_credentials(create_user):
         data=json.dumps({"email": EMAIL, "password": "wrongpassword123"}),
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.json()["success"] is False
 
 
 @pytest.mark.django_db
@@ -59,9 +57,8 @@ def test_user_retrieve(create_user, login_user):
         content_type="application/json",
     )
     assert response.status_code == status.HTTP_200_OK
-    assert response.json()["success"] == True
-    assert response.json()["data"]["id"] == user_id
-    assert response.json()["data"]["email"] == EMAIL
+    assert response.json()["id"] == user_id
+    assert response.json()["email"] == EMAIL
 
 
 @pytest.mark.django_db
@@ -75,7 +72,6 @@ def test_user_retrieve__unauthorised(create_user):
         content_type="application/json",
     )
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
-    assert response.json()["success"] == False
 
 
 @pytest.mark.django_db
@@ -89,8 +85,7 @@ def test_user_update(create_user, login_user):
         data=json.dumps({"email": "new_email@marcosaguayo.com"}),
     )
     assert response.status_code == status.HTTP_200_OK
-    assert response.json()["success"] == True
-    assert response.json()["data"]["email"] == "new_email@marcosaguayo.com"
+    assert response.json()["email"] == "new_email@marcosaguayo.com"
 
 
 @pytest.mark.django_db
@@ -102,7 +97,6 @@ def test_user_update__unauthorised(create_user):
         data=json.dumps({"email": "new_email@marcosaguayo.com"}),
     )
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
-    assert response.json()["success"] == False
 
 
 @pytest.mark.django_db
@@ -118,8 +112,7 @@ def test_profile_user_update(create_user, login_user):
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.json()["success"] == True
-    assert response.json()["data"]["profile"]["biography"] == biography
+    assert response.json()["profile"]["biography"] == biography
 
 
 @pytest.mark.django_db
@@ -131,7 +124,6 @@ def test_profile_user_update__unauthorised(create_user):
         data=json.dumps({"biography": "Hello World!"}),
     )
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
-    assert response.json()["success"] == False
 
 
 @pytest.mark.django_db
@@ -142,7 +134,7 @@ def test_user_token__check(create_user):
         content_type="application/json",
         data=json.dumps({"email": EMAIL, "password": PASSWORD}),
     )
-    token = response.json()["data"]["token"]
+    token = response.json()["token"]
 
     response = c.post(
         reverse("users-token-verify"),
@@ -179,7 +171,7 @@ def test_user_token__refresh(create_user):
         content_type="application/json",
         data=json.dumps({"email": EMAIL, "password": PASSWORD}),
     )
-    token = response.json()["data"]["token"]
+    token = response.json()["token"]
 
     response = c.post(
         reverse("users-token-refresh"),
@@ -188,112 +180,3 @@ def test_user_token__refresh(create_user):
     )
 
     assert response.status_code == status.HTTP_200_OK
-
-
-@pytest.mark.django_db
-def test_friends(
-    create_user, login_user, create_secondary_user, login_secondary_user
-):
-    main_user_id = create_user["id"]
-    secondary_user_id = create_secondary_user["id"]
-
-    # USER prespective
-    c = Client(HTTP_AUTHORIZATION="JWT " + login_user)
-    response = c.post(
-        reverse("friends-detail", kwargs={"friend_id": secondary_user_id}),
-        content_type="application/json",
-    )
-
-    assert response.status_code == status.HTTP_201_CREATED
-    assert response.json()["success"] is True
-
-    response = c.get(reverse("friends-list"), content_type="application/json")
-
-    assert response.status_code == status.HTTP_200_OK
-    assert response.json()["success"] is True
-    assert response.json()["data"] == [
-        {
-            "user_id": main_user_id,
-            "friend_id": secondary_user_id,
-            "accepted": False,
-        }
-    ]
-
-    # FRIEND prespective
-    c = Client(HTTP_AUTHORIZATION="JWT " + login_secondary_user)
-    response = c.get(reverse("friends-list"), content_type="application/json")
-
-    assert response.status_code == status.HTTP_200_OK
-    assert response.json()["success"] is True
-    assert response.json()["data"] == [
-        {
-            "user_id": main_user_id,
-            "friend_id": secondary_user_id,
-            "accepted": False,
-        }
-    ]
-
-    # User trying to add the friend again. It should fail with 400 error.
-    response = c.post(
-        reverse("friends-detail", kwargs={"friend_id": secondary_user_id}),
-        content_type="application/json",
-    )
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.json()["success"] is False
-
-    # ACCEPT invitation
-    response = c.post(
-        reverse("friends-detail", kwargs={"friend_id": main_user_id}),
-        content_type="application/json",
-    )
-    assert response.status_code == status.HTTP_201_CREATED
-    assert response.json()["success"] is True
-    assert response.json()["data"] == {
-        "user_id": main_user_id,
-        "friend_id": secondary_user_id,
-        "accepted": True,
-    }
-
-    response = c.get(reverse("friends-list"), content_type="application/json")
-
-    assert response.status_code == status.HTTP_200_OK
-    assert response.json()["success"] is True
-    assert response.json()["data"] == [
-        {
-            "user_id": main_user_id,
-            "friend_id": secondary_user_id,
-            "accepted": True,
-        }
-    ]
-
-    # Delete friend
-    response = c.delete(
-        reverse("friends-detail", kwargs={"friend_id": main_user_id}),
-        content_type="application/json",
-    )
-
-    assert response.status_code == status.HTTP_200_OK
-    assert response.json()["success"] is True
-
-    # USER prespective
-    c = Client(HTTP_AUTHORIZATION="JWT " + login_user)
-    response = c.get(reverse("friends-list"), content_type="application/json")
-
-    assert response.status_code == status.HTTP_200_OK
-    assert response.json()["success"] is True
-    assert response.json()["data"] == []
-
-
-@pytest.mark.django_db
-def test_friends_create(create_user, login_user, create_secondary_user):
-    main_user_id = create_user["id"]
-    secondary_user_id = create_secondary_user["id"]
-
-    c = Client(HTTP_AUTHORIZATION="JWT " + login_user)
-    response = c.post(
-        reverse("friends-detail", kwargs={"friend_id": secondary_user_id}),
-        content_type="application/json",
-    )
-
-    assert response.status_code == status.HTTP_201_CREATED
-    assert response.json()["success"] is True

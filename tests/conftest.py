@@ -36,7 +36,7 @@ def create_user():
     )
 
     assert response.status_code == status.HTTP_201_CREATED
-    return response.json()["data"]
+    return response.json()
 
 
 @pytest.fixture
@@ -49,7 +49,7 @@ def login_user(create_user):
         content_type="application/json",
         data=json.dumps({"email": EMAIL, "password": PASSWORD}),
     )
-    body = response.json()["data"]
+    body = response.json()
 
     return body["token"]
 
@@ -73,7 +73,7 @@ def create_secondary_user():
     )
 
     assert response.status_code == status.HTTP_201_CREATED
-    return response.json()["data"]
+    return response.json()
 
 
 @pytest.fixture
@@ -88,6 +88,6 @@ def login_secondary_user(create_secondary_user):
             {"email": EMAIL_SECONDARY, "password": PASSWORD_SECONDARY}
         ),
     )
-    body = response.json()["data"]
+    body = response.json()
 
     return body["token"]
