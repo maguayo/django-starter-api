@@ -1,0 +1,17 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: docker/compose:1.19.0
+        environment:
+          FLASK_CONFIG: testing
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build project
+          command: docker-compose -f production.yml build
+
+      - run:
+          name: Run Tests
+          command: docker-compose -f production.yml run --rm django pytest -v
