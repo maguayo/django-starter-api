@@ -9,5 +9,8 @@ class Profile(BaseModel):
     )
     biography = models.TextField(max_length=500, blank=True)
 
+    class Meta:
+        db_table = "profiles"
+
     def __str__(self):
         return str(self.user)

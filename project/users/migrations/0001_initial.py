@@ -229,4 +229,8 @@ class Migration(migrations.Migration):
                 "abstract": False,
             },
         ),
+        migrations.AlterModelOptions(name="profile", options={}),
+        migrations.AlterModelOptions(name="user", options={}),
+        migrations.AlterModelTable(name="profile", table="profiles"),
+        migrations.AlterModelTable(name="user", table="users"),
     ]

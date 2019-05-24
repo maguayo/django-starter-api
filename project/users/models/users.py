@@ -43,6 +43,9 @@ class User(BaseModel, AbstractUser):
         help_text="Set to true when the user have verified its email address.",
     )
 
+    class Meta:
+        db_table = "users"
+
     def __str__(self):
         """Return username."""
         return self.username
