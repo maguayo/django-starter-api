@@ -4,11 +4,13 @@
 A boilerplate for creating REST API with Django and Django Rest Framework.
 
 - Gitlab CI
+- CircleCI
 - Docker
 - Python Black
 - Flake8
 - Code coverage over 93%
 - Docker ready to deployment with Caddy
+- VSCode snippets and configuration
 
 
 ## Development
