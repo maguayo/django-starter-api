@@ -1,0 +1,23 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "mypy",
+            "type": "shell",
+            "command": "../env/bin/mypy project tests",
+            "presentation": {
+                "reveal": "never"
+            }
+        },
+        {
+            "label": "black",
+            "type": "shell",
+            "command": "../env/bin/black . --exclude \"local\" --check --diff",
+            "presentation": {
+                "reveal": "never"
+            }
+        }
+    ]
+}

@@ -1,0 +1,32 @@
+{
+    "python.formatting.provider": "black",
+    "editor.formatOnSave": true,
+    "python.pythonPath": "/usr/local/bin/python3.6",
+    "python.envFile": ".env",
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "project"
+    ],
+    "python.linting.mypyEnabled": false,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        ".mypy_cache": true,
+        "coverage_html_report": true,
+        "**/env": true,
+        "**/venv": true,
+        "**/__pycache__": true
+    },
+    "python.unitTest.pyTestArgs": [
+        "tests"
+    ],
+    "python.unitTest.unittestEnabled": false,
+    "python.unitTest.nosetestsEnabled": false,
+    "python.unitTest.pyTestEnabled": true,
+    "python.unitTest.autoTestDiscoverOnSaveEnabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.linting.enabled": true,
+}
