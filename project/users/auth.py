@@ -1,6 +1,3 @@
-from django.utils import timezone
-from django.conf import settings
-
 import jwt
 import uuid
 
