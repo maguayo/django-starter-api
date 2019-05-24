@@ -14,18 +14,6 @@ from rest_framework_jwt.compat import get_username_field
 from rest_framework_jwt.settings import api_settings
 
 
-def custom_payload_generator(user):
-    now = timezone.now()
-    expire_time = settings.JWT_AUTH["JWT_EXPIRATION_DELTA"]
-
-    return {
-        "id": str(user.id),
-        "email": user.email,
-        "orig_iat": int(now.timestamp()),
-        "exp": int((now - expire_time).timestamp()),
-    }
-
-
 def jwt_get_secret_key(payload=None):
     """
     For enhanced security you may want to use a secret key based on user.
@@ -80,13 +68,6 @@ def jwt_get_user_id_from_payload_handler(payload):
     return payload.get("id")
 
 
-def jwt_get_username_from_payload_handler(payload):
-    """
-    Override this function if username is formatted differently in payload
-    """
-    return payload.get("email")
-
-
 def jwt_encode_handler(payload):
     key = api_settings.JWT_PRIVATE_KEY or jwt_get_secret_key(payload)
     return jwt.encode(payload, key, api_settings.JWT_ALGORITHM).decode("utf-8")
@@ -114,14 +95,5 @@ def jwt_response_payload_handler(token, user=None, request=None):
     Returns the response data for both the login and refresh views.
     Override to return a custom response such as including the
     serialized representation of the User.
-
-    Example:
-
-    def jwt_response_payload_handler(token, user=None, request=None):
-        return {
-            'token': token,
-            'user': UserSerializer(user, context={'request': request}).data
-        }
-
     """
     return {"token": token}
