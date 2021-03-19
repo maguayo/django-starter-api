@@ -4,7 +4,7 @@ Pillow==6.2.0
 psycopg2==2.7.4 --no-binary psycopg2
 django>=2.0.10
 django-environ==0.4.5
-djangorestframework==3.9.1
+djangorestframework==3.11.2
 django-filter==2.0.0
 djangorestframework-jwt==1.11.0
 pyjwt==1.7.1
